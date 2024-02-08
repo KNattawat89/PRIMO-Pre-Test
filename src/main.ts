@@ -1,47 +1,52 @@
-export function merge(
+function merge(
   collection1: number[],
   collection2: number[],
   collection3: number[]
 ): number[] {
-  const result: number[] = [];
-  let i = 0,
-    j = 0,
-    k = 0;
-
-  while (
-    i < collection1.length &&
-    j < collection2.length &&
-    k < collection3.length
-  ) {
-    if (collection1[i] <= collection2[j] && collection1[i] <= collection3[k]) {
-      result.push(collection1[i]);
-      i++;
-    } else if (
-      collection2[j] <= collection1[i] &&
-      collection2[j] <= collection3[k]
-    ) {
-      result.push(collection2[j]);
-      j++;
-    } else {
-      result.push(collection3[k]);
-      k++;
+  function mergeSort(arr: number[]): number[] {
+    if (arr.length <= 1) {
+      return arr;
     }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return mergeArrays(mergeSort(left), mergeSort(right));
   }
 
-  while (i < collection1.length) {
-    result.push(collection1[i]);
-    i++;
-  }
+  function mergeArrays(arr1: number[], arr2: number[]): number[] {
+    const mergedArray: number[] = [];
+    let i = 0;
+    let j = 0;
 
-  while (j < collection2.length) {
-    result.push(collection2[j]);
-    j++;
-  }
+    while (i < arr1.length && j < arr2.length) {
+      if (arr1[i] <= arr2[j]) {
+        mergedArray.push(arr1[i]);
+        i++;
+      } else {
+        mergedArray.push(arr2[j]);
+        j++;
+      }
+    }
 
-  while (k < collection3.length) {
-    result.push(collection3[k]);
-    k++;
-  }
+    while (i < arr1.length) {
+      mergedArray.push(arr1[i]);
+      i++;
+    }
 
-  return result;
+    while (j < arr2.length) {
+      mergedArray.push(arr2[j]);
+      j++;
+    }
+
+    return mergedArray;
+  }
+  const sortedCollection1 = mergeSort(collection1);
+  const sortedCollection2 = mergeSort(collection2);
+  const sortedCollection3 = mergeSort(collection3);
+  const mergedArray = mergeArrays(sortedCollection1, sortedCollection2);
+  return mergeArrays(mergedArray, sortedCollection3);
 }
+
+export { merge };
